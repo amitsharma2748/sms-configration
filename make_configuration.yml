@@ -1,0 +1,73 @@
+Deployment Stage:
+  stage: Deploy
+  tags:
+    - local-nodejs
+  #default:
+  before_script:
+    - echo "++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    - echo "I Am In Make Config Deploy"
+    - echo "Deleting Existing Configuration.xml"
+    - PMAPPEXIST=$( pm2 ls |grep  $CI_PROJECT_TITLE  && echo "True" || echo "False")
+    - if [ -d $DEPLOYMENT_PATH$CI_PROJECT_TITLE ]; then
+    - echo "++++ IN MAKE CONFIG >>>>>> Folder is present with Same Name  ++++"
+    - else 
+    - echo "++++ IN MAKE CONFIG >>>>>> Folder  is NOT present with Same Name  ++++"
+    - echo "Deleting Existing Configuration.xml"
+    - rm $(pwd)/Configurations/configuration.xml
+    - fi
+    - echo "Staring the Process to make the Configuration file for the Projecting Sample"
+    - echo "The Configuration file will be named as configuration.xml and put in Configurations Folder"
+    - mkdir -p Configurations
+    - echo '<?xml version="1.0" encoding="UTF-8" ?>' > "$(pwd)/Configurations/configuration.xml"
+    - echo "$SMART24x7_Disclaimer" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$SMART_Contact" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "<CONFIGURATIONS>" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$MQTT_DEVELOPMENT_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$MYSQL_DEVELOPMENT_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$MONGO_DEVELOPMENT_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$REDIS_DEVELOPMENT_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$SMTP_DEVELOPMENT_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$PROJECT_DEVELOPMENT_VARIABLES" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "</CONFIGURATIONS>" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "Configuration.xml Generated from group and project variable"
+    - echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    - cat  "$(pwd)/Configurations/configuration.xml"
+    - ls -lt
+    - echo "+++++ Completed the Process of Making Configuration +++++++"
+    - echo "All Good for Deployment of Code on Development"
+
+Production Stage:
+  stage: Deploy
+  tags:
+    - kidhar-server
+  #default:
+  before_script:
+    - echo "++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    - echo "I Am In Make Config Deploy"
+    - PMAPPEXIST=$( pm2 ls |grep  $CI_PROJECT_TITLE  && echo "True" || echo "False")
+    - echo $PMAPPEXIST
+    - if [ $PMAPPEXIST = False ]; then
+    - echo "++++ IN MAKE CONFIG >>>>>> PM2 based APP is NOT present with Same Name  ++++"
+    - else 
+    - echo "++++ IN MAKE CONFIG >>>>>> PM2 Based APP is present with Same Name  ++++"
+    - echo "Deleting Existing Configuration.xml"
+    - rm $(pwd)/Configurations/configuration.xml
+    - fi
+    - echo "Staring the Process to make the Configuration file for the Projecting Sample"
+    - echo "The Configuration file will be named as configuration.xml and put in Configurations Folder"
+    - mkdir -p Configurations
+    - echo '<?xml version="1.0" encoding="UTF-8" ?>' > "$(pwd)/Configurations/configuration.xml"
+    - echo "$SMART24x7_Disclaimer" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$SMART_Contact" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "<CONFIGURATIONS>" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$MQTT_PRODUCTION_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$MYSQL_PRODUCTION_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$MONGO_PRODUCTION_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$REDIS_PRODUCTION_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$SMTP_PRODUCTION_DETAILS" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "$PROJECT_PRODUCTION_VARIABLES" >> "$(pwd)/Configurations/configuration.xml"
+    - echo "</CONFIGURATIONS>" >> "$(pwd)/Configurations/configuration.xml"
+    - cat  "$(pwd)/Configurations/configuration.xml"
+    - ls -lt
+    - echo "+++++ Completed the Process of Making Configuration +++++++"
+    - echo "All Good for Deployment of Code on Development"
